@@ -15,16 +15,17 @@ class _HomePageState extends State<HomePage> {
   Map<String, UserModel> contacts = {};
   final nameC = TextEditingController();
   final phoneC = TextEditingController();
+  String nameSearch = '';
 
   @override
   void initState() {
     super.initState();
 
-    fetchContact();
+    fetchContact(name: nameSearch);
   }
 
-  void fetchContact() async {
-    final result = await dataSource.getAllContact();
+  void fetchContact({required String name}) async {
+    final result = await dataSource.getAllContact(name: name);
 
     setState(() {
       contacts = result;
@@ -36,11 +37,26 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contact'),
+        elevation: 5,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Cari Nama',
+                    suffixIcon: Icon(Icons.search),
+                  ),
+                  maxLines: 1,
+                  onChanged: ((value) {
+                    nameSearch = value;
+                    fetchContact(name: nameSearch);
+                  }),
+                ),
+              ),
               ...contacts.entries.map(
                 (e) {
                   final key = e.key;
@@ -61,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                           trailing: InkResponse(
                             onTap: () {
                               dataSource.deleted(uuid: key);
-                              fetchContact();
+                              fetchContact(name: nameSearch);
                             },
                             child: const Icon(
                               Icons.delete,
@@ -89,7 +105,7 @@ class _HomePageState extends State<HomePage> {
           );
 
           if (result != null) {
-            fetchContact();
+            fetchContact(name: nameSearch);
           }
         },
         child: const Icon(Icons.add),
@@ -128,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                 );
 
                 if (result) {
-                  fetchContact();
+                  fetchContact(name: nameSearch);
 
                   Future.delayed(const Duration(seconds: 0)).whenComplete(
                     () => Navigator.pop(context),

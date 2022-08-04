@@ -7,8 +7,6 @@ import 'package:hive_latihan/model/user_model.dart';
 class DataSource {
   static const boxName = 'contact';
 
-  Future<void> openBox() async {}
-
   Future<bool> addContact({required String name, required String phone}) async {
     final rand = Random();
 
@@ -34,22 +32,25 @@ class DataSource {
     return false;
   }
 
-  Future<Map<String, UserModel>> getAllContact() async {
+  Future<Map<String, UserModel>> getAllContact({required String name}) async {
     Map<String, UserModel> map = {};
 
     try {
       final box = await Hive.openBox<Contact>(boxName);
 
       var mapData = box.toMap();
+
       for (var data in mapData.entries) {
-        map.putIfAbsent(
-          data.key,
-          () => UserModel(
-            uuid: data.value.uuid,
-            name: data.value.name,
-            phone: data.value.phone,
-          ),
-        );
+        if (data.value.name.toLowerCase().contains(name.toLowerCase())) {
+          map.putIfAbsent(
+            data.key,
+            () => UserModel(
+              uuid: data.value.uuid,
+              name: data.value.name,
+              phone: data.value.phone,
+            ),
+          );
+        }
       }
       box.close();
     } catch (e) {

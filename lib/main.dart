@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_latihan/hive/config.dart';
 import 'package:hive_latihan/hive/dao/contact.dart';
 import 'package:hive_latihan/view/home_page.dart';
 

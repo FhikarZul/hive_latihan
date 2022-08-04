@@ -18,6 +18,7 @@ class _AddCpntactPageState extends State<AddCpntactPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contact'),
+        elevation: 5,
       ),
       body: SafeArea(
         child: Padding(
